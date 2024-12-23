@@ -1,69 +1,114 @@
-# Maven Project with PostgreSQL JDBC and Spring BCryptPasswordEncoder
+# Weblog - Blog Platform
 
-This sample project is a template for Java programs using PostgreSQL JDBC and Spring Framework BCryptPasswordEncoder to encode passwords and authenticate user-login password. Both PostgreSQL JDBC and BCryptPasswordEncoder are managed by Maven. 
+## Project Description
 
-There are two sample programs: PasswordEncryption.java and WeBlog.java. 
+Weblog is a blog platform built using Java, Maven, PostgreSQL, and BCrypt for secure authentication. It follows a layered architecture that separates concerns into three key areas: data access, business logic, and presentation logic. This architecture is achieved using **DAOs** (Data Access Objects), **service facades**, and **presenters** to ensure code modularity and maintainability.
 
-## PasswordEncryption.java
+### Key Features:
+- **Authentication**: Secure login and registration functionality using **BCrypt** encryption.
+- **User Interactions**: 
+  - Users can follow bloggers.
+  - View, comment on, and like blogs.
+- **Data Management**: Utilizes **PostgreSQL** with **JDBC** for efficient data retrieval and management.
+- **Clean Architecture**: Layered architecture with separation of concerns for maintainability and scalability.
 
-The program shows how to use BCryptPasswordEncoder to encode passwords and how to authenticate user entered login password against the encoded password. 
+---
 
-This program depends on 
-
-```
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-crypto</artifactId>
-			<version>6.0.2</version>
-        </dependency> 
-```
-
-which depends on the following two dependencies
+## Project Structure
 
 ```
-   		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.20.0</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-jcl -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-jcl</artifactId>
-			<version>2.20.0</version>
-		</dependency>    
-```       
-
-Run the program and enter a password twice, it shows "authenticated" result. If you enter two different passwords, it shows "Failed authentication" output. 
-
-## WeBlog.java
-
-This program assumes a PostgreSQL server running on localhost with a student table. The connection information is hardcoded,
-
-The program requires the following dependency: 
-
-```
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.7.4</version>
-			<scope>runtime</scope>
-		</dependency>
+├── compose.yaml              # Docker Compose configuration file
+├── pom.xml                   # Maven project file for dependencies
+├── README.md                 # Project documentation (this file)
+├── src/                      # Source code
+│   ├── main/java/com/weblog  # Java source code
+│   │   ├── database/         # DAO implementations
+│   │   ├── entity/           # Entity classes representing the data model
+│   │   ├── service/          # Business logic (service facades)
+│   │   ├── ui/               # Presentation layer (presenters and views)
+│   │   └── utility/          # Utility classes (e.g., PasswordEncryptor)
+│   └── test/java/com/weblog  # Unit tests for the application
+└── target/                   # Compiled classes and resources
 ```
 
-The schema of the book table:
+---
 
-```
-CREATE TABLE book ( 
-    isbn varchar(13), 
-    title varchar(100), 
-    publisher varchar(50),
-    genre varchar(25), 
-    unit_price DECIMAL (10,2), 
-    PRIMARY KEY (isbn)
-);
-```
+## Technologies Used
 
-This sample program also shows how to create, read, and write auto-increment attributes and how to read, write and display system time in db with PostgreSQL. 
+- **Java**: Core language for backend logic.
+- **Maven**: Build automation tool for managing dependencies and building the project.
+- **PostgreSQL**: Relational database used for data storage and management.
+- **BCrypt**: Secure hashing algorithm for password storage and validation.
+- **JDBC**: Java Database Connectivity for interacting with PostgreSQL.
+- **Docker**: For containerizing the application and running database server with `compose.yaml`.
+
+---
+
+## Setup and Installation
+
+### Prerequisites
+
+Before running the application, make sure you have the following installed:
+
+- **Java 8 or higher**
+- **Maven**
+- **Docker** (optional, if you wish to use Docker Compose)
+- **PostgreSQL** (or you can use the provided Docker Compose configuration)
+
+### Steps to Run the Application Locally
+
+1. **Clone the repository**:
+   ```
+   git clone https://github.com/Jon-Purvis/weblog.git
+   cd weblog
+   ```
+
+2. **Build the project**:
+   - Using Maven:
+     ```
+     mvn clean install
+     ```
+
+3. **Configure PostgreSQL**:
+   - If you don't have PostgreSQL set up, create a database called `weblog`.
+   - Alternatively, you can use the provided `compose.yaml` to run the database in Docker.
+   ```
+   docker-compose up -d
+   docker exec -it weblog-db psql -U postgres
+   CREATE DATABASE db;
+   CREATE USER username WITH PASSWORD 'password';
+   GRANT ALL PRIVILEGES ON DATABASE db TO username;
+   ```
+
+   ```
+   docker exec -it weblog-db psql -U username -d db
+   \i /src/main/java/com/weblog/database/table.s
+   ```
+
+4. **Run the application**:
+   - Once the project is built and the database is set up, run the application:
+     ```
+     mvn exec:java
+     ```
+
+
+
+## Features and Usage
+
+### Authentication:
+- Users can sign up by creating an account with a username and password.
+- Passwords are stored securely using **BCrypt** hashing.
+- Users can log in using their credentials.
+
+### Blog Features:
+- Users can read, post, comment on, and like blogs.
+- Bloggers can interact with readers, with support for following other bloggers.
+
+---
+
+## Future Improvements
+
+- Enhance the UI for a better user experience.
+
+---
+
